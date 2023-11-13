@@ -70,6 +70,7 @@ Get the **token** and **key authorization string**
 var authz = (await order.Authorizations()).First();
 var httpChallenge = await authz.Http();
 var keyAuthz = httpChallenge.KeyAuthz;
+var token = httpChallenge.Token;
 ```
 
 Save the **key authorization string** in a text file,
