@@ -111,6 +111,7 @@ namespace Certes
                 OrganizationUnit = "Dev",
                 CommonName = hosts[0],
             }, certKey);
+            Assert.NotNull(finalizedOrder);
 
             var cert = await orderCtx.Download(null);
 

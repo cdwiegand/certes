@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -26,6 +27,7 @@ namespace Certes.Pkcs
             pfxBuilder.AddTestCerts();
             pfxBuilder.AddIssuers(Encoding.UTF8.GetBytes(cert));
             var pfx = pfxBuilder.Build("my-cert", "abcd1234");
+            Assert.NotNull(pfx);
         }
 
         [Theory]
@@ -41,6 +43,7 @@ namespace Certes.Pkcs
                 Encoding.UTF8.GetBytes(leafCert), KeyFactory.NewKey(alog));
             pfxBuilder.FullChain = false;
             var pfx = pfxBuilder.Build("my-cert", "abcd1234");
+            Assert.NotNull(pfx);
         }
     }
 }

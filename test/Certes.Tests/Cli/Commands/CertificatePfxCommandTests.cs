@@ -106,6 +106,7 @@ namespace Certes.Cli.Commands
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234 --out {outPath} --issuer ./issuers.pem --friendly-name friendly", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
             ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            Assert.NotEmpty(ret.pfx);
             fileMock.Verify(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()), Times.Once);
         }
     }
