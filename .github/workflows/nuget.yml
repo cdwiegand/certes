@@ -1,0 +1,37 @@
+name: Build nuget package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ closed ]
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    name: Build nuget packages
+    # runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+      - name: Nuget restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Test
+        # for now, excluding the integration tests as they require a working pebble or ACME server
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName\!~Tests.Integration
+      - name: Pack
+        run: dotnet pack --configuration Release --output ./bin
+      - name: Push
+        if: github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push ./bin/*.nupkg --source https://nuget.pkg.github.com/${GITHUB_REPOSITORY_OWNER}/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate
