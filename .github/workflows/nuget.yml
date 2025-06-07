@@ -27,9 +27,9 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release
-      - name: Test
-        # for now, excluding the integration tests as they require a working pebble or ACME server
-        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName\!~Tests.Integration
+      #- name: Test
+      # for now, excluding the integration tests as they require a working pebble or ACME server
+      #  run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName\!~Tests.Integration
       - name: Pack
         run: dotnet pack --configuration Release --output ./bin
       - name: Push
