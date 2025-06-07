@@ -21,10 +21,6 @@ namespace Certes.Cli.Commands
         [Fact]
         public async Task CanProcessCommand()
         {
-            Assert.True(true); // unable to actually run test due to https://pebble.azurewebsites.net/ failing tests as it wants http:// but issues a redirect anyways..
-            if (DateTime.UtcNow.Year > 0) // force a return w/o VS giving me an error 
-                return;
-
             var orderLoc = new Uri("http://acme.com/o/1");
             var certLoc = new Uri("http://acme.com/c/1");
             var privateKeyPath = "./my-key.pem";
