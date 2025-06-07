@@ -58,15 +58,6 @@ stages:
           pool:
             vmImage: "windows-latest"
 
-      - template: scripts/build.yml
-        parameters:
-          name: Windows_net462
-          displayName: Windows - net462
-          framework: net462
-          appFramework: net462
-          pool:
-            vmImage: "windows-latest"
-
   - stage: pack
     displayName: Pack
     dependsOn:
