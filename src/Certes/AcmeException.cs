@@ -53,6 +53,7 @@ namespace Certes
         /// The <see cref="StreamingContext"/> 
         /// that contains contextual information about the source or destination.
         /// </param>
+        [Obsolete("This constructor is for serialization purposes only and should not be used directly.")]
         protected AcmeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
