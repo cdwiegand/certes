@@ -17,11 +17,11 @@ namespace Certes.Acme
         /// <param name="links">The links.</param>
         /// <param name="error">The error.</param>
         /// <param name="retryAfter">The retryAfter delay.</param>
-        public AcmeHttpResponse(Uri location, T resource, ILookup<string, Uri> links, AcmeError? error, int retryAfter = 0)
+        public AcmeHttpResponse(Uri? location, T? resource, ILookup<string, Uri>? links, AcmeError? error, int retryAfter = 0)
         {
-            Location = location;
-            Resource = resource;
-            Links = links;
+            Location = location ?? throw new ArgumentNullException(nameof(location), "Location cannot be null.");
+            Resource = resource ?? throw new ArgumentNullException(nameof(resource), "Resource cannot be null.");
+            Links = links ?? Enumerable.Empty<Uri>().ToLookup(x => string.Empty);
             Error = error;
             RetryAfter = retryAfter;
         }

@@ -78,7 +78,10 @@ namespace Certes.Cli.Commands
                 if (!string.IsNullOrWhiteSpace(issuer))
                 {
                     var issuerPem = await File.ReadAllText(issuer);
-                    pfxBuilder.AddIssuers(Encoding.UTF8.GetBytes(issuerPem));
+                    if (issuerPem != null)
+                    {
+                        pfxBuilder.AddIssuers(Encoding.UTF8.GetBytes(issuerPem));
+                    }
                 }
 
                 var pfx = pfxBuilder.Build(pfxName, password);

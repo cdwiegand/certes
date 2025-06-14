@@ -19,8 +19,8 @@ namespace Certes.Acme
     {
         private class MockHttpMessageHandler : HttpMessageHandler
         {
-            private readonly string productVersion = 
-                typeof(AcmeHttpClient).GetTypeInfo().Assembly.GetName().Version.ToString();
+            private readonly string? productVersion = 
+                typeof(AcmeHttpClient).GetTypeInfo().Assembly.GetName().Version?.ToString();
             private readonly JsonSerializerSettings jsonSettings = JsonUtil.CreateSettings();
 
             public bool SendNonce { get; set; } = true;
@@ -32,13 +32,15 @@ namespace Certes.Acme
                 var isCertes = false;
                 foreach (var header in request.Headers.UserAgent)
                 {
-                    if (header.Product.Name == "Certes" &&
+                    if (header.Product != null &&
+                        header.Product.Name == "Certes" &&
                         header.Product.Version == productVersion) {
                         isCertes = true;
                     }
                 }
 
                 Assert.True(isCertes, "No user-agent header");
+                Assert.NotNull(request.RequestUri);
 
                 if (request.RequestUri.AbsoluteUri.EndsWith("directory"))
                 {
@@ -87,6 +89,7 @@ namespace Certes.Acme
             httpMock.Setup(m => m.Get<Directory>(It.IsAny<Uri>()))
                 .ReturnsAsync(new AcmeHttpResponse<Directory>(
                     accountLoc, MockDirectoryV2, null, null));
+            Assert.NotNull(MockDirectoryV2.NewAccount);
             httpMock.SetupSequence(
                 m => m.Post<Account>(MockDirectoryV2.NewAccount, It.IsAny<object>()))
                 .ReturnsAsync(new AcmeHttpResponse<Account>(
@@ -108,6 +111,7 @@ namespace Certes.Acme
                 httpMock.Object);
 
             await ctx.NewAccount("", true);
+            Assert.NotNull(MockDirectoryV2.NewAccount);
             httpMock.Verify(m => m.Post<Account>(MockDirectoryV2.NewAccount, It.IsAny<object>()), Times.Exactly(2));
 
         }
@@ -120,6 +124,7 @@ namespace Certes.Acme
             httpMock.Setup(m => m.Get<Directory>(It.IsAny<Uri>()))
                 .ReturnsAsync(new AcmeHttpResponse<Directory>(
                     accountLoc, MockDirectoryV2, null, null));
+            Assert.NotNull(MockDirectoryV2.NewAccount);
             httpMock.SetupSequence(
                 m => m.Post<Account>(MockDirectoryV2.NewAccount, It.IsAny<object>()))
                 .ReturnsAsync(new AcmeHttpResponse<Account>(

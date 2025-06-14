@@ -66,6 +66,12 @@ namespace Certes.Cli.Commands
             cmd.Handler = CommandHandler.Create(async (Args args, IConsole console) =>
             {
                 var (orderId, domain, app, slot, preferredChain, privateKey, server, keyPath, azureOptions) = args;
+                
+                if (azureOptions.ResourceGroup == null)
+                {
+                    throw new CertesCliException(Strings.ErrorOptionMissing);
+                }
+
                 var (serverUri, key) = await ReadAccountKey(server, keyPath, true, false);
                 var azureCredentials = await CreateAzureRestClient(azureOptions);
 
@@ -142,7 +148,7 @@ namespace Certes.Cli.Commands
                 resourceGroup, thumbprint, certData);
         }
 
-        private static async Task<CertificateInner> FindCertificate(
+        private static async Task<CertificateInner?> FindCertificate(
             IWebSiteManagementClient client, string resourceGroup, string thumbprint)
         {
             var certificates = await client.Certificates.ListByResourceGroupAsync(resourceGroup);

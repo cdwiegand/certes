@@ -88,7 +88,7 @@ namespace Certes.Cli.Commands
                         {
                             value = new CertificateInner[0]
                         })
-                    )
+                    ) ?? throw new InvalidOperationException("No output")
                 });
             certOpMock.Setup(m => m.CreateOrUpdateWithHttpMessagesAsync(resourceGroup, It.IsAny<string>(), It.IsAny<CertificateInner>(), default, default))
                 .ReturnsAsync((string r, string n, CertificateInner c, Dictionary<string, List<string>> h, CancellationToken t)
@@ -128,7 +128,7 @@ namespace Certes.Cli.Commands
                 + $" --subscription-id {Guid.NewGuid()} --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.NotNull(ret.data);
 
             webAppOpMock.Verify(m => m.CreateOrUpdateHostNameBindingWithHttpMessagesAsync(
@@ -149,7 +149,7 @@ namespace Certes.Cli.Commands
                 + $" --subscription-id {Guid.NewGuid()} --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.NotNull(ret.data);
             webAppOpMock.Verify(m => m.CreateOrUpdateHostNameBindingSlotWithHttpMessagesAsync(
                 resourceGroup, appName, domain, It.IsAny<HostNameBindingInner>(), appSlot, default, default), Times.Once);
@@ -167,7 +167,7 @@ namespace Certes.Cli.Commands
                                 new CertificateInner("certes", "pass", thumbprint: cert.Thumbprint),
                             }
                         })
-                    )
+                    ) ?? throw new InvalidOperationException("No output")
                 });
 
             errOutput.Clear();
@@ -178,7 +178,7 @@ namespace Certes.Cli.Commands
                 + $" --subscription-id {Guid.NewGuid()} --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.NotNull(ret.data);
             var thumbprint = ret.data["properties.thumbprint"];
             Assert.Equal(cert.Thumbprint, $"{thumbprint}");

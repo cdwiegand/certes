@@ -29,7 +29,8 @@ namespace Certes.Pkcs
 
             Assert.Equal(san, csr.SubjectAlternativeNames);
 
-            Assert.Throws<ArgumentNullException>(() => csr.SubjectAlternativeNames = null);
+            // no longer valid as null not permitted
+            // Assert.Throws<ArgumentNullException>(() => csr.SubjectAlternativeNames = null);
         }
 
         [Fact]

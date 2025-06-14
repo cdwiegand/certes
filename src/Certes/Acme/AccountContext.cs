@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Certes.Acme.Resource;
 using Certes.Json;
 using Certes.Jws;
+using Certes.Properties;
 
 namespace Certes.Acme
 {
@@ -88,7 +89,8 @@ namespace Certes.Acme
             IAcmeContext context, Account body, bool ensureSuccessStatusCode,
             string? eabKeyId = null, string? eabKey = null, string? eabKeyAlg = null)
         {
-            var endpoint = await context.GetResourceUri(d => d.NewAccount);
+            var endpoint = await context.GetResourceUri(d => d.NewAccount
+                ?? throw new AcmeException(string.Format(Strings.ErrorEndpointNotPresent, "NewAccount")));
             var jws = new JwsSigner(context.AccountKey);
 
             if (eabKeyId != null && eabKey != null)

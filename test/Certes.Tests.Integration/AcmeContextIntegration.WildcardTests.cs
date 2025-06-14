@@ -25,7 +25,9 @@ namespace Certes
                 var ctx = new AcmeContext(dirUri, GetKeyV2(), http: GetAcmeHttpClient(dirUri));
 
                 var orderCtx = await AuthzDns(ctx, hosts);
+                Assert.NotNull(orderCtx);
                 var certKey = KeyFactory.NewKey(KeyAlgorithm.RS256);
+                Assert.NotNull(certKey);
                 var finalizedOrder = await orderCtx.Finalize(new CsrInfo
                 {
                     CountryName = "CA",

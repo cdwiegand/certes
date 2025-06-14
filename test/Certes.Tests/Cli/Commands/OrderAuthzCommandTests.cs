@@ -87,7 +87,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"authz {orderLoc} {domain} http", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {
@@ -104,12 +104,12 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"authz {orderLoc} {domain} dns", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {
                     location = challenge2Loc,
-                    dnsTxt = GetKeyV2().DnsTxt(authz.Challenges[1].Token),
+                    dnsTxt = GetKeyV2().DnsTxt(authz.Challenges[1].Token!),
                     resource = authz.Challenges[1],
                 }, JsonSettings),
                 JsonConvert.SerializeObject(ret, JsonSettings));

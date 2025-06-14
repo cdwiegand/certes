@@ -17,7 +17,7 @@ namespace Certes.Acme.Resource
         /// The terms of service.
         /// </value>
         [JsonProperty("termsOfService")]
-        public Uri TermsOfService { get; }
+        public Uri? TermsOfService { get; }
 
         /// <summary>
         /// Gets or sets the website.
@@ -26,7 +26,7 @@ namespace Certes.Acme.Resource
         /// The website.
         /// </value>
         [JsonProperty("website")]
-        public Uri Website { get; }
+        public Uri? Website { get; }
 
         /// <summary>
         /// Gets or sets the caa identities.
@@ -35,7 +35,7 @@ namespace Certes.Acme.Resource
         /// The caa identities.
         /// </value>
         [JsonProperty("caaIdentities")]
-        public IList<string> CaaIdentities { get; }
+        public IList<string> CaaIdentities { get; } = [];
 
         /// <summary>
         /// Gets or sets a value indicating whether [external account required].
@@ -54,9 +54,9 @@ namespace Certes.Acme.Resource
         /// <param name="caaIdentities">The caa identities.</param>
         /// <param name="externalAccountRequired">The external account required.</param>
         public DirectoryMeta(
-            Uri termsOfService,
-            Uri website,
-            IList<string> caaIdentities,
+            Uri? termsOfService,
+            Uri? website,
+            IList<string>? caaIdentities,
             bool? externalAccountRequired)
         {
             TermsOfService = termsOfService;

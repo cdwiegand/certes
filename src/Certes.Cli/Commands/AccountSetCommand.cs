@@ -31,6 +31,10 @@ namespace Certes.Cli.Commands
             {
                 var (server, keyPath) = args;
                 var (serverUri, key) = await ReadAccountKey(server, keyPath, false);
+                if (key == null)
+                {
+                    throw new CertesCliException(string.Format(Strings.ErrorNoAccountKey, serverUri));
+                }
 
                 logger.Debug("Setting account for '{0}'.", serverUri);
 

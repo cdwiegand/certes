@@ -7,7 +7,7 @@ namespace Certes.Cli.Settings
     {
         Task SetDefaultServer(Uri serverUri);
         Task<Uri> GetDefaultServer();
-        Task<IKey> GetAccountKey(Uri serverUri);
+        Task<IKey?> GetAccountKey(Uri serverUri);
         Task SetAccountKey(Uri server, IKey key);
         Task<AzureSettings> GetAzureSettings();
         Task SetAzureSettings(AzureSettings azSettings);

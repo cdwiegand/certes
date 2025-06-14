@@ -18,7 +18,7 @@ namespace Certes.Cli.Commands
         [Fact]
         public async Task CanProcessCommand()
         {
-            var resourceGroups = new[] 
+            var resourceGroups = new[]
             {
                 new ResourceGroupInner(location: "/resourceGroups/group1", name: "group1"),
                 new ResourceGroupInner(location: "/resourceGroups/group2", name: "group2"),
@@ -52,7 +52,7 @@ namespace Certes.Cli.Commands
                         {
                             value = resourceGroups
                         })
-                    )
+                    ) ?? throw new InvalidOperationException("No output")
                 });
 
             var (console, stdOutput, errOutput) = MockConsole();
@@ -68,9 +68,9 @@ namespace Certes.Cli.Commands
                 $" --subscription-id {azSettings.SubscriptionId}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
 
-            var resourceGroupsReturned = ret.resourceGroups as JArray;
+            var resourceGroupsReturned = ret.resourceGroups as JArray ?? throw new InvalidOperationException("No output");
             Assert.Equal(2, resourceGroupsReturned.Count);
             settingsMock.Verify(m => m.SetAzureSettings(It.IsAny<AzureSettings>()), Times.Once);
         }

@@ -15,7 +15,7 @@ namespace Certes
 {
     public static partial class Helper
     {
-        private static string ValidCertPem = null;
+        private static string? ValidCertPem = null;
 
         public static IList<string> Logs
         {
@@ -29,9 +29,10 @@ namespace Certes
 
         public static void SaveKey(string keyPath)
         {
-            if (!Directory.Exists(Path.GetDirectoryName(keyPath)))
+            var dir = Path.GetDirectoryName(keyPath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(keyPath));
+                Directory.CreateDirectory(dir);
             }
 
             File.WriteAllText(keyPath, GetTestKey(KeyAlgorithm.ES256));
@@ -65,12 +66,12 @@ namespace Certes
             TProperty value)
         {
             var member = propertyLambda.Body as MemberExpression;
-            var propInfo = member.Member as PropertyInfo;
+            var propInfo = member!.Member as PropertyInfo;
 
-            propInfo.SetValue(source, value);
+            propInfo!.SetValue(source, value);
             var actualValue = propInfo.GetValue(source);
 
-            Assert.Equal(value, (TProperty)actualValue);
+            Assert.Equal(value, (TProperty)actualValue!);
         }
 
         public static string GetTestKey(this KeyAlgorithm algo)

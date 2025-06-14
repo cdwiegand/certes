@@ -40,6 +40,10 @@ namespace Certes.Cli.Commands
             {
                 var (orderId, domain, challengeType, server, keyPath) = args;
                 var (serverUri, key) = await ReadAccountKey(server, keyPath, true, false);
+                if (key == null)
+                {
+                    throw new CertesCliException(string.Format(Strings.ErrorNoAccountKey, serverUri));
+                }
 
                 var type =
                     string.Equals(challengeType, "dns", StringComparison.OrdinalIgnoreCase) ? ChallengeTypes.Dns01 :
@@ -56,6 +60,10 @@ namespace Certes.Cli.Commands
                     ?? throw new CertesCliException(string.Format(Strings.ErrorChallengeNotAvailable, type));
 
                 var challenge = await challengeCtx.Resource();
+                if (string.IsNullOrEmpty(challenge.Token))
+                {
+                    throw new CertesCliException(string.Format(Strings.ErrorChallengeNotAvailable, type));
+                }
 
                 if (string.Equals(type, ChallengeTypes.Dns01, StringComparison.OrdinalIgnoreCase))
                 {

@@ -44,7 +44,7 @@ namespace Certes.Cli.Commands
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
 
             var envMock = new Mock<IEnvironmentVariables>(MockBehavior.Strict);
-            envMock.Setup(m => m.GetVar(It.IsAny<string>())).Returns((string)null);
+            envMock.Setup(m => m.GetVar(It.IsAny<string>())).Returns((string?)null);
 
             var (console, stdOutput, errOutput) = MockConsole();
 
@@ -54,7 +54,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"finalize {orderLoc}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             var privateKeyBytes = Convert.FromBase64String($"{ret.privateKey}");
             var privateKey = KeyFactory.FromDer(privateKeyBytes);
             Assert.NotNull(privateKey);
@@ -81,7 +81,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"finalize {orderLoc} --dn CN=*.a.com --out {outPath}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {
@@ -101,7 +101,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"finalize {orderLoc} --dn CN=*.a.com --private-key {keyPath}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {

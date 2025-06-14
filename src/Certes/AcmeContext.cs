@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using Certes.Jws;
+using Certes.Properties;
 using Directory = Certes.Acme.Resource.Directory;
 using Identifier = Certes.Acme.Resource.Identifier;
 using IdentifierType = Certes.Acme.Resource.IdentifierType;
@@ -93,7 +94,8 @@ namespace Certes
         /// <returns>The account resource.</returns>
         public async Task<Account> ChangeKey(IKey? key)
         {
-            var endpoint = await this.GetResourceUri(d => d.KeyChange);
+            var endpoint = await this.GetResourceUri(d => d.KeyChange
+                ?? throw new AcmeException(string.Format(Strings.ErrorEndpointNotPresent, "KeyChange")));
             var location = await Account().Location();
 
             var newKey = key ?? KeyFactory.NewKey(defaultKeyType);
@@ -158,7 +160,8 @@ namespace Certes
         /// </returns>
         public async Task RevokeCertificate(byte[] certificate, RevocationReason reason, IKey? certificatePrivateKey)
         {
-            var endpoint = await this.GetResourceUri(d => d.RevokeCert);
+            var endpoint = await this.GetResourceUri(d => d.RevokeCert
+            ?? throw new AcmeException(string.Format(Strings.ErrorEndpointNotPresent, "RevokeCert")));
 
             var body = new CertificateRevocation
             {
@@ -189,7 +192,8 @@ namespace Certes
         /// </returns>
         public async Task<IOrderContext> NewOrder(IList<string> identifiers, DateTimeOffset? notBefore = null, DateTimeOffset? notAfter = null)
         {
-            var endpoint = await this.GetResourceUri(d => d.NewOrder);
+            var endpoint = await this.GetResourceUri(d => d.NewOrder
+                ?? throw new AcmeException(string.Format(Strings.ErrorEndpointNotPresent, "NewOrder")));
 
             var body = new Order
             {

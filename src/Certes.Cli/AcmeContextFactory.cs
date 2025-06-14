@@ -2,5 +2,5 @@
 
 namespace Certes.Cli
 {
-    internal delegate IAcmeContext AcmeContextFactory(Uri directoryUri, IKey accountKey);
+    internal delegate IAcmeContext AcmeContextFactory(Uri directoryUri, IKey? accountKey);
 }

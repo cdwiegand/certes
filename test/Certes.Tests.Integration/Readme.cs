@@ -21,6 +21,7 @@ namespace Certes
 
             var authz = (await order.Authorizations()).First();
             var httpChallenge = await authz.Http();
+            Assert.NotNull(httpChallenge);
 
             var token = httpChallenge.Token;
             var keyAuthz = httpChallenge.KeyAuthz;

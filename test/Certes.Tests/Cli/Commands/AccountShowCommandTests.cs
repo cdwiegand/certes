@@ -80,7 +80,7 @@ namespace Certes.Cli.Commands
 
             errOutput.Clear();
             stdOutput.Clear();
-            settingsMock.Setup(m => m.GetAccountKey(serverUri)).ReturnsAsync((IKey)null);
+            settingsMock.Setup(m => m.GetAccountKey(serverUri)).ReturnsAsync((IKey?)null);
 
             await command.InvokeAsync($"show", console.Object);
             Assert.False(errOutput.Length == 0, "Should print error");

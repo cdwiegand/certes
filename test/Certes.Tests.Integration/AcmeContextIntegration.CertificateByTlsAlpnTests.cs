@@ -45,8 +45,9 @@ namespace Certes
                 foreach (var authzCtx in authrizations)
                 {
                     var authz = await authzCtx.Resource();
-
+                    Assert.NotNull(authz?.Identifier?.Value);
                     var tlsAlpnChallenge = await authzCtx.TlsAlpn();
+                    Assert.NotNull(tlsAlpnChallenge);
                     var alpnCertKey = KeyFactory.NewKey(KeyAlgorithm.ES256);
                     var alpnCert = ctx.AccountKey.TlsAlpnCertificate(tlsAlpnChallenge.Token, authz.Identifier.Value, alpnCertKey);
 
@@ -112,6 +113,10 @@ namespace Certes
                     Cert = certC.Certificate.ToDer(),
                     Key = certKey.ToDer(),
                 }, JsonUtil.CreateSettings());
+                if (authz == null || authz.Identifier == null || authz.Identifier.Value == null)
+                {
+                    throw new ArgumentNullException(nameof(authz), "Authorization or Identifier cannot be null.");
+                }
 
                 using (
                     var resp = await http.Value.PostAsync(

@@ -30,7 +30,7 @@ namespace Certes
             return new HttpClient(handler);
         });
 
-        private static Uri stagingServerV2;
+        private static Uri? stagingServerV2;
 
         public static IAcmeHttpClient GetAcmeHttpClient(Uri uri) => Helper.CreateHttp(uri, http.Value);
 
@@ -122,6 +122,7 @@ namespace Certes
                     if (a.Status == AuthorizationStatus.Pending)
                     {
                         var httpChallenge = await authz.Http();
+                        Assert.NotNull(httpChallenge);
                         await httpChallenge.Validate();
                     }
                 }

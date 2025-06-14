@@ -44,7 +44,7 @@ namespace Certes.Cli.Commands
                 ClientSecret = secret,
             };
 
-            return CreateRestClient(tenantId, subscriptionId, loginInfo);
+            return CreateRestClient(tenantId!, subscriptionId!, loginInfo);
         }
 
         protected static Command AddCommonOptions(Command command)
@@ -73,7 +73,7 @@ namespace Certes.Cli.Commands
             return resClient;
         }
 
-        private void ValidateOption(string value, string optionName)
+        private void ValidateOption(string? value, string optionName)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

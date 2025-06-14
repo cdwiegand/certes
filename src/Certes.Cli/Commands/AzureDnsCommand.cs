@@ -76,7 +76,11 @@ namespace Certes.Cli.Commands
             using var client = clientFactory.Invoke(azureCredentials);
 
             client.SubscriptionId = azureCredentials.Credentials.DefaultSubscriptionId;
-            var idValue = authz.Identifier.Value;
+            var idValue = authz.Identifier?.Value;
+            if (string.IsNullOrWhiteSpace(idValue))
+            {
+                throw new CertesCliException(string.Format(Strings.ErrorIdentifierNotAvailable, domain));
+            }
             var zone = await FindDnsZone(client, idValue);
 
             var name = zone.Name.Length == idValue.Length ?

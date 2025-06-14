@@ -66,7 +66,7 @@ namespace Certes.Cli.Commands
             var challengeMock = new Mock<IChallengeContext>(MockBehavior.Strict);
             challengeMock.SetupGet(m => m.Location).Returns(challengeLoc);
             challengeMock.SetupGet(m => m.Type).Returns(ChallengeTypes.Dns01);
-            challengeMock.SetupGet(m => m.Token).Returns(authz.Challenges[0].Token);
+            challengeMock.SetupGet(m => m.Token).Returns(authz.Challenges[0].Token!);
 
             var authzMock = new Mock<IAuthorizationContext>(MockBehavior.Strict);
             authzMock.Setup(m => m.Resource()).ReturnsAsync(authz);
@@ -99,7 +99,7 @@ namespace Certes.Cli.Commands
                         {
                             value = new[] { new ZoneInner(id: "/s/abcd1234/resourceGroups/res/a", name: "certes.com") }
                         })
-                    )
+                    ) ?? throw new InvalidOperationException("No output")
                 });
 
             recordSetsOpMock.Setup(m => m.CreateOrUpdateWithHttpMessagesAsync(resourceGroup, "certes.com", "_acme-challenge.www", RecordType.TXT, It.IsAny<RecordSetInner>(), default, default, default, default))
@@ -120,7 +120,7 @@ namespace Certes.Cli.Commands
                 $" --subscription-id {Guid.NewGuid()} --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(expectedRecordSetId, $"{ret.data.id}");
             recordSetsOpMock.Verify(m => m.CreateOrUpdateWithHttpMessagesAsync(resourceGroup, "certes.com", "_acme-challenge.www", RecordType.TXT, It.IsAny<RecordSetInner>(), default, default, default, default), Times.Once);
 
@@ -134,7 +134,7 @@ namespace Certes.Cli.Commands
                 $" --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(expectedRecordSetId, $"{ret.data.id}");
             recordSetsOpMock.Verify(m => m.CreateOrUpdateWithHttpMessagesAsync(resourceGroup, "certes.com", "_acme-challenge.www", RecordType.TXT, It.IsAny<RecordSetInner>(), default, default, default, default), Times.Once);
 
@@ -149,7 +149,7 @@ namespace Certes.Cli.Commands
                 $" --subscription-id {Guid.NewGuid()} --resource-group {resourceGroup}";
             await command.InvokeAsync(args, console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(expectedRecordSetId, $"{ret.data.id}");
             recordSetsOpMock.Verify(m => m.CreateOrUpdateWithHttpMessagesAsync(resourceGroup, "certes.com", "_acme-challenge.www", RecordType.TXT, It.IsAny<RecordSetInner>(), default, default, default, default), Times.Once);
             authz.Wildcard = null;
@@ -187,7 +187,7 @@ namespace Certes.Cli.Commands
                         {
                             value = new[] { new ZoneInner(id: "/s/abcd1234/resourceGroups/res/a", name: "abc.com") }
                         })
-                    )
+                    ) ?? throw new InvalidOperationException("No output")
                 });
             args =
                 $"dns {orderLoc} {domain}" +

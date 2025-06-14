@@ -78,7 +78,7 @@ namespace Certes.Cli.Commands
             stdOutput.Clear();
 
             var outPath = "./cert.pem";
-            string saved = null;
+            string? saved = null;
             fileMock.Setup(m => m.WriteAllText(outPath, It.IsAny<string>()))
                 .Callback((string path, string text) => saved = text)
                 .Returns(Task.CompletedTask);
@@ -95,7 +95,7 @@ namespace Certes.Cli.Commands
             fileMock.Verify(m => m.WriteAllText(outPath, It.IsAny<string>()), Times.Once);
             Assert.Equal(
                 certChainContent.Replace("\r", ""),
-                saved.Replace("\r", "").TrimEnd());
+                (saved ?? "").Replace("\r", "").TrimEnd());
 
             errOutput.Clear();
             stdOutput.Clear();

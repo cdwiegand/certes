@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Certes.Cli.Settings;
 using NLog;
+using Org.BouncyCastle.Crypto.Modes;
 
 namespace Certes.Cli.Commands
 {
@@ -22,8 +23,8 @@ namespace Certes.Cli.Commands
             File = fileUtil;
         }
 
-        public async Task<(Uri Server, IKey Key)> ReadAccountKey(
-            Uri server, string keyPath = null, bool fallbackToSettings = false, bool required = false)
+        public async Task<(Uri Server, IKey? Key)> ReadAccountKey(
+            Uri server, string? keyPath = null, bool fallbackToSettings = false, bool required = false)
         {
             var serverUri = server ??
                 await UserSettings.GetDefaultServer();
@@ -32,7 +33,10 @@ namespace Certes.Cli.Commands
             {
                 logger.Debug("Load account key form '{0}'.", keyPath);
                 var pem = await File.ReadAllText(keyPath);
-                return (serverUri, KeyFactory.FromPem(pem));
+                if (!string.IsNullOrWhiteSpace(pem))
+                {
+                    return (serverUri, KeyFactory.FromPem(pem));
+                }
             }
 
             var key = fallbackToSettings ?
@@ -47,7 +51,7 @@ namespace Certes.Cli.Commands
             return (serverUri, key);
         }
 
-        public static async Task<IKey> ReadKey(
+        public static async Task<IKey?> ReadKey(
             string keyPath,
             string environmentVariableName,
             IFileUtil file,
@@ -55,7 +59,11 @@ namespace Certes.Cli.Commands
         {
             if (!string.IsNullOrWhiteSpace(keyPath))
             {
-                return KeyFactory.FromPem(await file.ReadAllText(keyPath));
+                string? pem = await file.ReadAllText(keyPath);
+                if (!string.IsNullOrWhiteSpace(pem))
+                {
+                    return KeyFactory.FromPem(pem);
+                }
             }
             else
             {

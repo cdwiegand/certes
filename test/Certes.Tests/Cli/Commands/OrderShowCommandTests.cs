@@ -49,7 +49,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"show {orderLoc}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {

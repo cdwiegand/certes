@@ -147,4 +147,7 @@
   <data name="ErrorUnsupportedResourceType" xml:space="preserve">
     <value>Unsupported resource type '{0}'.</value>
   </data>
+  <data name="ErrorEndpointNotPresent" xml:space="preserve">
+    <value>{0} endpoint is not available in the directory.</value>
+  </data>
 </root>

@@ -45,6 +45,7 @@ namespace Certes.Crypto
             var ecKey = (EcJsonWebKey)k.JsonWebKey;
 
             Assert.Equal("EC", ecKey.KeyType);
+            Assert.NotNull(ecKey.X);
             Assert.Equal(ecKey.X.Length, ecKey.X.Length);
         }
 

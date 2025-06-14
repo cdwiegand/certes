@@ -47,7 +47,7 @@ namespace Certes
             await ClearAuthorizations(orderCtx);
         }
 
-        protected async Task<IOrderContext> AuthzDns(AcmeContext ctx, string[] hosts)
+        protected async Task<IOrderContext?> AuthzDns(AcmeContext ctx, string[] hosts)
         {
             var orderCtx = await ctx.NewOrder(hosts);
             var order = await orderCtx.Resource();
@@ -63,7 +63,9 @@ namespace Certes
             foreach (var authz in authrizations)
             {
                 var res = await authz.Resource();
+                Assert.NotNull(res?.Identifier?.Value);
                 var dnsChallenge = await authz.Dns();
+                Assert.NotNull(dnsChallenge);
                 tokens.Add(res.Identifier.Value, dnsChallenge.Token);
             }
 
@@ -76,6 +78,7 @@ namespace Certes
                 if (res.Status == AuthorizationStatus.Pending)
                 {
                     var dnsChallenge = await authz.Dns();
+                    Assert.NotNull(dnsChallenge);
                     await dnsChallenge.Validate();
                 }
             }

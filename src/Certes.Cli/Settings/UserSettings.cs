@@ -13,9 +13,9 @@ namespace Certes.Cli.Settings
     {
         internal class Model
         {
-            public Uri DefaultServer { get; set; }
-            public IList<AcmeSettings> Servers { get; set; }
-            public AzureSettings Azure { get; set; }
+            public Uri? DefaultServer { get; set; }
+            public IList<AcmeSettings> Servers { get; set; } = [];
+            public AzureSettings? Azure { get; set; }
         }
 
         private readonly IFileUtil fileUtil;
@@ -66,7 +66,7 @@ namespace Certes.Cli.Settings
             await fileUtil.WriteAllText(settingsFilepath.Value, json);
         }
 
-        public async Task<IKey> GetAccountKey(Uri serverUri)
+        public async Task<IKey?> GetAccountKey(Uri serverUri)
         {
             // env settings overwrites user settings
             var envKey = environment.GetVar("CERTES_ACME_ACCOUNT_KEY");
@@ -105,7 +105,8 @@ namespace Certes.Cli.Settings
             var json = await fileUtil.ReadAllText(settingsFilepath.Value);
             return json == null ?
                 new Model() :
-                JsonConvert.DeserializeObject<Model>(json, JsonUtil.CreateSettings());
+                JsonConvert.DeserializeObject<Model>(json, JsonUtil.CreateSettings())
+                ?? throw new JsonSerializationException("Failed to deserialize user settings.");
         }
 
         private string ReadSettingsFilepath()
@@ -114,6 +115,10 @@ namespace Certes.Cli.Settings
             if (string.IsNullOrWhiteSpace(homePath))
             {
                 homePath = environment.GetVar("HOME");
+            }
+            if (string.IsNullOrWhiteSpace(homePath))
+            {
+                homePath = Environment.CurrentDirectory;
             }
 
             return Path.Combine(homePath, ".certes", "certes.json");

@@ -33,7 +33,7 @@ namespace Certes.Jws
         /// <exception cref="NotSupportedException">
         /// If the provided key is not one of the supported <seealso cref="KeyAlgorithm" />.
         /// </exception>
-        public AccountKey(KeyInfo keyInfo)
+        public AccountKey(KeyInfo? keyInfo)
         {
             if (keyInfo == null)
             {

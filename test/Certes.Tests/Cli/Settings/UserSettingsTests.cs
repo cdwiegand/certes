@@ -21,7 +21,7 @@ namespace Certes.Cli
             var envMock = GetEnvMock(fullPath);
 
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
             fileMock.Setup(m => m.WriteAllText(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
@@ -53,7 +53,7 @@ namespace Certes.Cli
             var envMock = GetEnvMock(fullPath);
 
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
             Assert.Equal(WellKnownServers.LetsEncryptV2, await settings.GetDefaultServer());
@@ -112,7 +112,7 @@ namespace Certes.Cli
             envMock.Setup(m => m.GetVar("CERTES_AZURE_CLIENT_SECRET")).Returns(envSettings.ClientSecret);
         
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
             var azSettings = await settings.GetAzureSettings();
@@ -139,7 +139,7 @@ namespace Certes.Cli
 
             var json = JsonConvert.SerializeObject(new UserSettings.Model { Azure = azSettings }, JsonUtil.CreateSettings());
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
             fileMock.Setup(m => m.WriteAllText(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
@@ -191,7 +191,7 @@ namespace Certes.Cli
             envMock.Setup(m => m.GetVar("CERTES_ACME_ACCOUNT_KEY")).Returns(Convert.ToBase64String(key));
 
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
             var ret = await settings.GetAccountKey(uri);
@@ -209,10 +209,10 @@ namespace Certes.Cli
             var configPath = Path.Combine(fullPath, ".certes", "certes.json");
 
             var envMock = GetEnvMock(fullPath);
-            envMock.Setup(m => m.GetVar("CERTES_ACME_ACCOUNT_KEY")).Returns((string)null);
+            envMock.Setup(m => m.GetVar("CERTES_ACME_ACCOUNT_KEY")).Returns((string?)null);
 
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
             var ret = await settings.GetAccountKey(uri);
@@ -240,7 +240,7 @@ namespace Certes.Cli
                 JsonUtil.CreateSettings());
 
             var fileMock = new Mock<IFileUtil>(MockBehavior.Strict);
-            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string)null);
+            fileMock.Setup(m => m.ReadAllText(It.IsAny<string>())).ReturnsAsync((string?)null);
             fileMock.Setup(m => m.WriteAllText(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var settings = new UserSettings(fileMock.Object, envMock.Object);
@@ -292,7 +292,7 @@ namespace Certes.Cli
         private static Mock<IEnvironmentVariables> GetEnvMock(string path, bool forWin = true)
         {
             var mock = new Mock<IEnvironmentVariables>(MockBehavior.Strict);
-            mock.Setup(m => m.GetVar(It.IsAny<string>())).Returns((string)null);
+            mock.Setup(m => m.GetVar(It.IsAny<string>())).Returns((string?)null);
 
             path = Path.GetFullPath(path);
             if (forWin)
@@ -300,7 +300,7 @@ namespace Certes.Cli
                 var drive = Path.GetPathRoot(path);
                 mock.Setup(m => m.GetVar("HOME")).Returns("");
                 mock.Setup(m => m.GetVar("HOMEDRIVE")).Returns(drive);
-                mock.Setup(m => m.GetVar("HOMEPATH")).Returns(path.Substring(drive.Length));
+                mock.Setup(m => m.GetVar("HOMEPATH")).Returns(path.Substring(drive!.Length));
             }
             else
             {

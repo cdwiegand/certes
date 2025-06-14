@@ -12,7 +12,7 @@ namespace Certes
 {
     public static partial class Helper
     {
-        private static string accountKeyV1;
+        private static string? accountKeyV1;
 
         public static Task<AccountKey> LoadkeyV1()
         {

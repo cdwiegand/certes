@@ -32,8 +32,8 @@
             Help = Strings.HelpCommandAzure,
         };
 
-        public string Command { get; private set; }
-        public string Help { get; private set; }
+        public string Command { get; private set; } = "";
+        public string Help { get; private set; } = "";
 
         private CommandGroup()
         {

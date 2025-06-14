@@ -66,7 +66,8 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
+            Assert.NotNull(ret);
             Assert.Equal(certLoc.ToString(), $"{ret.location}");
             Assert.NotNull(ret.pfx);
 
@@ -79,7 +80,7 @@ namespace Certes.Cli.Commands
                 .Returns(Task.CompletedTask);
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234 --out {outPath}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.Equal(
                 JsonConvert.SerializeObject(new
                 {
@@ -101,7 +102,7 @@ namespace Certes.Cli.Commands
 
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234 --out {outPath} --issuer ./issuers.pem --friendly-name friendly", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
-            ret = JsonConvert.DeserializeObject(stdOutput.ToString());
+            ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
             Assert.NotEmpty(ret.pfx);
             fileMock.Verify(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()), Times.Once);
         }

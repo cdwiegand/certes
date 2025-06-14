@@ -149,5 +149,14 @@ namespace Certes.Properties {
                 return ResourceManager.GetString("ErrorUnsupportedResourceType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported resource type &apos;{0}&apos;..
+        /// </summary>
+        internal static string ErrorEndpointNotPresent {
+            get {
+                return ResourceManager.GetString("ErrorEndpointNotPresent", resourceCulture);
+            }
+        }
     }
 }

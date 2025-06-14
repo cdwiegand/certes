@@ -28,6 +28,7 @@ namespace Certes.Acme.Resource
             var settings = JsonUtil.CreateSettings();
             var srcJson = File.ReadAllText("./Data/account.json");
             var deserialized = JsonConvert.DeserializeObject<Account>(srcJson, settings);
+            Assert.NotNull(deserialized);
             var json = JsonConvert.SerializeObject(deserialized, settings);
 
             Assert.Equal(AccountStatus.Valid, deserialized.Status);

@@ -2,6 +2,6 @@
 {
     internal interface IEnvironmentVariables
     {
-        string GetVar(string name);
+        string? GetVar(string name);
     }
 }

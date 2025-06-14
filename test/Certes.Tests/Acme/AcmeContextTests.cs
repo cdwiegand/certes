@@ -19,6 +19,7 @@ namespace Certes.Acme
             httpMock.Setup(m => m.Get<Directory>(It.IsAny<Uri>()))
                 .ReturnsAsync(new AcmeHttpResponse<Directory>(
                     accountLoc, MockDirectoryV2, null, null));
+            Assert.NotNull(MockDirectoryV2.NewAccount);
             httpMock.Setup(
                 m => m.Post<Account>(MockDirectoryV2.NewAccount, It.IsAny<object>()))
                 .ReturnsAsync(new AcmeHttpResponse<Account>(
@@ -26,6 +27,7 @@ namespace Certes.Acme
                     {
                         Status = AccountStatus.Valid
                     }, null, null));
+            Assert.NotNull(MockDirectoryV2.KeyChange);
             httpMock.Setup(
                 m => m.Post<Account>(MockDirectoryV2.KeyChange, It.IsAny<object>()))
                 .ReturnsAsync(new AcmeHttpResponse<Account>(
@@ -83,6 +85,7 @@ namespace Certes.Acme
                 .ReturnsAsync(new AcmeHttpResponse<Directory>(directoryUri, Helper.MockDirectoryV2, default, default));
             httpClientMock.Setup(m => m.ConsumeNonce()).ReturnsAsync("nonce");
 
+            Assert.NotNull(Helper.MockDirectoryV2.RevokeCert);
             httpClientMock.Setup(m => m.Post<string>(Helper.MockDirectoryV2.RevokeCert, It.IsAny<object>()))
                 .ReturnsAsync(new AcmeHttpResponse<string>(default, default, default, default));
 

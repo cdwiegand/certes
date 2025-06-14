@@ -6,7 +6,7 @@ namespace Certes.Cli
 {
     internal class FileUtil : IFileUtil
     {
-        public async Task<string> ReadAllText(string path)
+        public async Task<string?> ReadAllText(string path)
         {
             if (!File.Exists(path))
             {
@@ -29,7 +29,7 @@ namespace Certes.Cli
         {
             var fullPath = Path.GetFullPath(path);
             var dir = Path.GetDirectoryName(fullPath);
-            if (!Directory.Exists(dir))
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }

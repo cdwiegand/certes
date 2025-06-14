@@ -40,6 +40,11 @@ namespace Certes.Cli.Commands
                 throw new CertesCliException(
                     string.Format(Strings.ErrorExportInvalidOrder, order.Status));
             }
+            if (order.Certificate == null)
+            {
+                throw new CertesCliException(
+                    string.Format(Strings.ErrorExportInvalidOrder, orderCtx.Location));
+            }
 
             return (order.Certificate, await orderCtx.Download(preferredChain));
         }

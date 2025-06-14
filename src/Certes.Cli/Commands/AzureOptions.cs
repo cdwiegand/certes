@@ -4,6 +4,6 @@ namespace Certes.Cli.Commands
 {
     internal class AzureOptions : AzureSettings
     {
-        public string ResourceGroup { get; set; }
+        public string? ResourceGroup { get; set; }
     }
 }
