@@ -15,7 +15,7 @@ namespace Certes.Acme
         /// <value>
         /// The error type URI.
         /// </value>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Gets or sets the detail message.
@@ -23,7 +23,7 @@ namespace Certes.Acme
         /// <value>
         /// The detail message.
         /// </value>
-        public string Detail { get; set; }
+        public string? Detail { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier for this error.
@@ -31,7 +31,7 @@ namespace Certes.Acme
         /// <value>
         /// The identifier for this error.
         /// </value>
-        public Identifier Identifier { get; set;}
+        public Identifier? Identifier { get; set; }
 
         /// <summary>
         /// Gets or sets the subproblems.
@@ -39,7 +39,7 @@ namespace Certes.Acme
         /// <value>
         /// The subproblems.
         /// </value>
-        public IList<AcmeError> Subproblems { get; set; }
+        public IList<AcmeError>? Subproblems { get; set; }
 
         /// <summary>
         /// Gets or sets the HTTP status.

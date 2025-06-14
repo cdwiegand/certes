@@ -36,7 +36,7 @@ namespace Certes.Acme.Resource
         /// <value>
         /// The identifiers.
         /// </value>
-        public IList<Identifier> Identifiers { get; set; }
+        public IList<Identifier>? Identifiers { get; set; }
 
         /// <summary>
         /// Gets or sets the not before.
@@ -66,7 +66,7 @@ namespace Certes.Acme.Resource
         /// TODO: model https://tools.ietf.org/html/rfc7807
         /// </remarks>
         [JsonProperty("error")]
-        public object Error { get; set; }
+        public object? Error { get; set; }
 
         /// <summary>
         /// Gets or sets the authorizations.
@@ -75,7 +75,7 @@ namespace Certes.Acme.Resource
         /// The authorizations.
         /// </value>
         [JsonProperty("authorizations")]
-        public IList<Uri> Authorizations { get; set; }
+        public IList<Uri>? Authorizations { get; set; }
 
         /// <summary>
         /// Gets or sets the finalize.
@@ -84,7 +84,7 @@ namespace Certes.Acme.Resource
         /// The finalize.
         /// </value>
         [JsonProperty("finalize")]
-        public Uri Finalize { get; set; }
+        public Uri? Finalize { get; set; }
 
         /// <summary>
         /// Gets or sets the certificate.
@@ -93,7 +93,7 @@ namespace Certes.Acme.Resource
         /// The certificate.
         /// </value>
         [JsonProperty("certificate")]
-        public Uri Certificate { get; set; }
+        public Uri? Certificate { get; set; }
 
         /// <summary>
         /// Represents the payload to finalize an order.
@@ -108,7 +108,7 @@ namespace Certes.Acme.Resource
             /// The CSR.
             /// </value>
             [JsonProperty("csr")]
-            internal string Csr { get; set; }
+            internal string? Csr { get; set; }
         }
     }
 }

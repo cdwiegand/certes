@@ -14,7 +14,7 @@ namespace Certes.Acme
         /// <value>
         /// The URL used for validation.
         /// </value>
-        public Uri Url { get; set; }
+        public Uri? Url { get; set; }
 
         /// <summary>
         /// Gets or sets the host name used for validation.
@@ -22,7 +22,7 @@ namespace Certes.Acme
         /// <value>
         /// The host name used for validation.
         /// </value>
-        public string HostName { get; set; }
+        public string? HostName { get; set; }
 
         /// <summary>
         /// Gets or sets the addresses resolved.
@@ -30,7 +30,7 @@ namespace Certes.Acme
         /// <value>
         /// The addresses resolved.
         /// </value>
-        public IList<string> AddressesResolved { get; set; }
+        public IList<string>? AddressesResolved { get; set; }
 
         /// <summary>
         /// Gets or sets the address used.
@@ -38,6 +38,6 @@ namespace Certes.Acme
         /// <value>
         /// The address used.
         /// </value>
-        public string AddressUsed { get; set; }
+        public string? AddressUsed { get; set; }
     }
 }

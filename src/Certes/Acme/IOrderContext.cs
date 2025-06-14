@@ -23,12 +23,12 @@ namespace Certes.Acme
         /// <param name="csr">The CSR in DER.</param>
         /// <returns>The order finalized.</returns>
         Task<Order> Finalize(byte[] csr);
-        
+
         /// <summary>
         /// Downloads the certificate chain in PEM.
         /// </summary>
         /// <param name="preferredChain">The preferred Root Certificate.</param>
         /// <returns>The certificate chain in PEM.</returns>
-        Task<CertificateChain> Download(string preferredChain = null);
+        Task<CertificateChain> Download(string? preferredChain = null);
     }
 }

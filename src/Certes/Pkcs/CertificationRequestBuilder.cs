@@ -18,12 +18,12 @@ namespace Certes.Pkcs
     public class CertificationRequestBuilder : ICertificationRequestBuilder
     {
         private static readonly KeyAlgorithmProvider keyAlgorithmProvider = new KeyAlgorithmProvider();
-        private string commonName;
+        private string commonName = "";
         private readonly List<(DerObjectIdentifier Id, string Value)> attributes = new List<(DerObjectIdentifier, string)>();
         private IList<string> subjectAlternativeNames = new List<string>();
 
-        private string pkcsObjectId;
-        private AsymmetricCipherKeyPair keyPair;
+        private string pkcsObjectId = "";
+        private AsymmetricCipherKeyPair? keyPair;
 
         /// <summary>
         /// Gets the key.
@@ -148,15 +148,15 @@ namespace Certes.Pkcs
             var attribute = new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensions));
 
             LoadKeyPair();
-            var signatureFactory = new Asn1SignatureFactory(pkcsObjectId, keyPair.Private);
+            var signatureFactory = new Asn1SignatureFactory(pkcsObjectId, keyPair!.Private);
             return new Pkcs10CertificationRequest(signatureFactory, x509, keyPair.Public, new DerSet(attribute));
         }
 
         private void LoadKeyPair()
         {
             var (algo, keyPair) = keyAlgorithmProvider.GetKeyPair(Key.ToDer());
-            pkcsObjectId = algo.ToPkcsObjectId();
-            this.keyPair = keyPair;
+            pkcsObjectId = algo.ToPkcsObjectId()!;
+            this.keyPair = keyPair!;
         }
     }
 }

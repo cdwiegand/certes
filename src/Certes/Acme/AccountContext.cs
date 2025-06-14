@@ -46,7 +46,7 @@ namespace Certes.Acme
         public async Task<IOrderListContext> Orders()
         {
             var account = await Resource();
-            return new OrderListContext(Context, account.Orders);
+            return new OrderListContext(Context, account.Orders!);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Certes.Acme
         /// <returns>
         /// The account.
         /// </returns>
-        public async Task<Account> Update(IList<string> contact = null, bool agreeTermsOfService = false)
+        public async Task<Account> Update(IList<string>? contact = null, bool agreeTermsOfService = false)
         {
             var location = await Context.Account().Location();
             var account = new Account
@@ -86,11 +86,11 @@ namespace Certes.Acme
         /// <returns>The ACME response.</returns>
         internal static async Task<AcmeHttpResponse<Account>> NewAccount(
             IAcmeContext context, Account body, bool ensureSuccessStatusCode,
-            string eabKeyId = null, string eabKey = null, string eabKeyAlg = null)
+            string? eabKeyId = null, string? eabKey = null, string? eabKeyAlg = null)
         {
             var endpoint = await context.GetResourceUri(d => d.NewAccount);
             var jws = new JwsSigner(context.AccountKey);
-            
+
             if (eabKeyId != null && eabKey != null)
             {
                 var header = new
@@ -117,16 +117,16 @@ namespace Certes.Acme
                 switch (header.alg)
                 {
                     case "HS512":
-                        using(var hs512 = new HMACSHA512(JwsConvert.FromBase64String(eabKey))) signatureHash = hs512.ComputeHash(signingBytes);
+                        using (var hs512 = new HMACSHA512(JwsConvert.FromBase64String(eabKey))) signatureHash = hs512.ComputeHash(signingBytes);
                         break;
                     case "HS384":
                         using (var hs384 = new HMACSHA384(JwsConvert.FromBase64String(eabKey))) signatureHash = hs384.ComputeHash(signingBytes);
                         break;
                     default:
                         using (var hs256 = new HMACSHA256(JwsConvert.FromBase64String(eabKey))) signatureHash = hs256.ComputeHash(signingBytes);
-                        break;   
+                        break;
                 }
-                    
+
                 var signatureBase64 = JwsConvert.ToBase64String(signatureHash);
 
                 body.ExternalAccountBinding = new

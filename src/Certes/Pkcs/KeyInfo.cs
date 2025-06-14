@@ -20,7 +20,7 @@ namespace Certes.Pkcs
         /// The private key information.
         /// </value>
         [JsonProperty("der")]
-        public byte[] PrivateKeyInfo { get; set; }
+        public byte[] PrivateKeyInfo { get; set; } = [];
 
         /// <summary>
         /// Reads the key from the given <paramref name="stream"/>.

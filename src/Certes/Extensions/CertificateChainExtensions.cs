@@ -37,7 +37,7 @@ namespace Certes
         /// <param name="certificateChain">The certificate chain.</param>
         /// <param name="certKey">The certificate key.</param>
         /// <returns>The encoded certificate chain.</returns>
-        public static string ToPem(this CertificateChain certificateChain, IKey certKey = null)
+        public static string ToPem(this CertificateChain certificateChain, IKey? certKey = null)
         {
             var certStore = new CertificateStore();
             foreach (var issuer in certificateChain.Issuers)

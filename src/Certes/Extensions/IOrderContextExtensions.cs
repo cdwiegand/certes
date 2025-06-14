@@ -48,9 +48,13 @@ namespace Certes
         {
             var builder = new CertificationRequestBuilder(key);
             var order = await context.Resource();
-            foreach (var identifier in order.Identifiers)
+            if (order.Identifiers != null)
             {
-                builder.SubjectAlternativeNames.Add(identifier.Value);
+                foreach (var identifier in order.Identifiers)
+                {
+                    if (identifier != null)
+                        builder.SubjectAlternativeNames.Add(identifier.Value!);
+                }
             }
 
             return builder;
@@ -67,7 +71,7 @@ namespace Certes
         /// <returns>
         /// The certificate generated.
         /// </returns>
-        public static async Task<CertificateChain> Generate(this IOrderContext context, CsrInfo csr, IKey key, string preferredChain = null, int retryCount = 1)
+        public static async Task<CertificateChain> Generate(this IOrderContext context, CsrInfo csr, IKey key, string? preferredChain = null, int retryCount = 1)
         {
             var order = await context.Resource();
             if (order.Status != OrderStatus.Ready && // draft-11
@@ -99,7 +103,7 @@ namespace Certes
         /// <param name="value">The identifier value.</param>
         /// <param name="type">The identifier type.</param>
         /// <returns>The authorization found.</returns>
-        public static async Task<IAuthorizationContext> Authorization(this IOrderContext context, string value, IdentifierType type = IdentifierType.Dns)
+        public static async Task<IAuthorizationContext?> Authorization(this IOrderContext context, string value, IdentifierType type = IdentifierType.Dns)
         {
             var wildcard = value.StartsWith("*.");
             if (wildcard)
@@ -110,7 +114,8 @@ namespace Certes
             foreach (var authzCtx in await context.Authorizations())
             {
                 var authz = await authzCtx.Resource();
-                if (string.Equals(authz.Identifier.Value, value, StringComparison.OrdinalIgnoreCase) &&
+                if (authz.Identifier != null &&
+                    string.Equals(authz.Identifier.Value, value, StringComparison.OrdinalIgnoreCase) &&
                     wildcard == authz.Wildcard.GetValueOrDefault() &&
                     authz.Identifier.Type == type)
                 {

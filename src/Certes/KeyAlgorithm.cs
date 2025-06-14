@@ -50,7 +50,7 @@ namespace Certes
             return algorithm.ToString();
         }
 
-        internal static string ToPkcsObjectId(this KeyAlgorithm algo)
+        internal static string? ToPkcsObjectId(this KeyAlgorithm algo)
         {
             switch (algo)
             {

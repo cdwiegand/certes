@@ -15,6 +15,6 @@ namespace Certes.Jws
         /// The type of the key.
         /// </value>
         [JsonProperty("kty", Order = 2)]
-        internal string KeyType { get; set; }
+        internal string? KeyType { get; set; }
     }
 }

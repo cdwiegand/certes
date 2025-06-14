@@ -35,7 +35,7 @@ namespace Certes.Acme
             var authz = await Resource();
             return authz
                 .Challenges?
-                .Select(c => new ChallengeContext(Context, c.Url, c.Type, c.Token)) ??
+                .Select(c => new ChallengeContext(Context, c.Url!, c.Type!, c.Token!)) ??
                 Enumerable.Empty<IChallengeContext>();
         }
 

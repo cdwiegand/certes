@@ -14,7 +14,7 @@ namespace Certes.Jws
         /// The protected.
         /// </value>
         [JsonProperty("protected")]
-        public string Protected { get; set; }
+        public string? Protected { get; set; }
 
         /// <summary>
         /// Gets or sets the payload.
@@ -23,7 +23,7 @@ namespace Certes.Jws
         /// The payload.
         /// </value>
         [JsonProperty("payload")]
-        public string Payload { get; set; }
+        public string? Payload { get; set; }
 
         /// <summary>
         /// Gets or sets the signature.
@@ -32,7 +32,7 @@ namespace Certes.Jws
         /// The signature.
         /// </value>
         [JsonProperty("signature")]
-        public string Signature { get; set; }
+        public string? Signature { get; set; }
     }
 
 }

@@ -24,7 +24,7 @@ namespace Certes
         /// <value>
         /// The error occurred while processing ACME operations.
         /// </value>
-        public AcmeError Error { get; private set; }
+        public AcmeError? Error { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AcmeRequestException"/> class.

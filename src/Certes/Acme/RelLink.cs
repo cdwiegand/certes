@@ -13,7 +13,7 @@ namespace Certes.Acme
         /// <value>
         /// The relation.
         /// </value>
-        public string Rel { get; set; }
+        public string? Rel { get; set; }
 
         /// <summary>
         /// Gets or sets the URI.
@@ -21,6 +21,6 @@ namespace Certes.Acme
         /// <value>
         /// The URI.
         /// </value>
-        public Uri Uri { get; set; }
+        public Uri? Uri { get; set; }
     }
 }

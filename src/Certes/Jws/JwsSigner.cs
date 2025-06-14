@@ -39,10 +39,10 @@ namespace Certes.Jws
         /// <param name="nonce">The nonce.</param>
         /// <returns>The signed payload.</returns>
         public JwsPayload Sign(
-            object payload,
-            Uri keyId = null,
-            Uri url = null,
-            string nonce = null)
+            object? payload,
+            Uri? keyId = null,
+            Uri? url = null,
+            string? nonce = null)
         {
             var jsonSettings = JsonUtil.CreateSettings();
             var protectedHeader = (keyId) == null ?

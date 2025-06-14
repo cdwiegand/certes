@@ -19,6 +19,6 @@ namespace Certes.Acme.Resource
         /// The orders.
         /// </value>
         [JsonProperty("orders")]
-        public IList<Uri> Orders { get; set; }
+        public IList<Uri>? Orders { get; set; }
     }
 }

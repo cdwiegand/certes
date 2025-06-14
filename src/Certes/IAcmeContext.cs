@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using Certes.Jws;
+using Directory = Certes.Acme.Resource.Directory;
 
 namespace Certes
 {
@@ -70,7 +71,7 @@ namespace Certes
         /// <returns>
         /// The account created.
         /// </returns>
-        Task<IAccountContext> NewAccount(IList<string> contact, bool termsOfServiceAgreed = false, string eabKeyId = null, string eabKey = null, string eabKeyAlg = null);
+        Task<IAccountContext> NewAccount(IList<string> contact, bool termsOfServiceAgreed = false, string? eabKeyId = null, string? eabKey = null, string? eabKeyAlg = null);
 
         /// <summary>
         /// Revokes the certificate.
@@ -81,14 +82,14 @@ namespace Certes
         /// <returns>
         /// The awaitable.
         /// </returns>
-        Task RevokeCertificate(byte[] certificate, RevocationReason reason = RevocationReason.Unspecified, IKey certificatePrivateKey = null);
+        Task RevokeCertificate(byte[] certificate, RevocationReason reason = RevocationReason.Unspecified, IKey? certificatePrivateKey = null);
 
         /// <summary>
         /// Changes the account key.
         /// </summary>
         /// <param name="key">The new account key.</param>
         /// <returns>The account resource.</returns>
-        Task<Account> ChangeKey(IKey key = null);
+        Task<Account> ChangeKey(IKey? key = null);
 
         /// <summary>
         /// Creates a new the order.
@@ -107,7 +108,7 @@ namespace Certes
         /// <param name="entity">The data to sign.</param>
         /// <param name="uri">The URI for the request.</param>
         /// <returns>The JWS payload.</returns>
-        Task<JwsPayload> Sign(object entity, Uri uri);
+        Task<JwsPayload> Sign(object? entity, Uri uri);
 
         /// <summary>
         /// Gets the order by specified location.

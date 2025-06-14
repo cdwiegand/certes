@@ -16,7 +16,7 @@ namespace Certes.Acme.Resource
         /// The type.
         /// </value>
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Gets or sets the URL.
@@ -25,7 +25,7 @@ namespace Certes.Acme.Resource
         /// The URL.
         /// </value>
         [JsonProperty("url")]
-        public Uri Url { get; set; }
+        public Uri? Url { get; set; }
 
         /// <summary>
         /// Gets or sets the status.
@@ -53,7 +53,7 @@ namespace Certes.Acme.Resource
         /// The errors.
         /// </value>
         [JsonProperty("error")]
-        public AcmeError Error { get; set; }
+        public AcmeError? Error { get; set; }
 
         /// <summary>
         /// Gets or sets the token.
@@ -62,6 +62,6 @@ namespace Certes.Acme.Resource
         /// The token.
         /// </value>
         [JsonProperty("token")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 }

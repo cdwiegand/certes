@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Certes.Acme;
 using Certes.Acme.Resource;
+using Directory = Certes.Acme.Resource.Directory;
 
 namespace Certes
 {
@@ -42,7 +43,7 @@ namespace Certes
         /// <returns>
         /// The account created.
         /// </returns>
-        public static Task<IAccountContext> NewAccount(this IAcmeContext context, string email, bool termsOfServiceAgreed = false, string eabKeyId = null, string eabKey = null, string eabKeyAlg = null)
+        public static Task<IAccountContext> NewAccount(this IAcmeContext context, string? email, bool termsOfServiceAgreed = false, string? eabKeyId = null, string? eabKey = null, string? eabKeyAlg = null)
             => context.NewAccount(new[] { $"mailto:{email}" }, termsOfServiceAgreed, eabKeyId, eabKey, eabKeyAlg);
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace Certes
         /// </summary>
         /// <param name="context">The ACME context.</param>
         /// <returns>The terms of service link.</returns>
-        public static async Task<Uri> TermsOfService(this IAcmeContext context)
+        public static async Task<Uri?> TermsOfService(this IAcmeContext context)
         {
             var dir = await context.GetDirectory();
             return dir.Meta?.TermsOfService;

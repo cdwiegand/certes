@@ -29,7 +29,7 @@ namespace Certes.Acme
         public async Task<IEnumerable<IAuthorizationContext>> Authorizations()
         {
             var order = await Resource();
-            return order
+            return order?
                 .Authorizations?
                 .Select(a => new AuthorizationContext(Context, a)) ??
                 Enumerable.Empty<IAuthorizationContext>();
@@ -46,6 +46,8 @@ namespace Certes.Acme
         {
             var order = await Resource();
             var payload = new Order.Payload { Csr = JwsConvert.ToBase64String(csr) };
+            if (order.Finalize == null)
+                throw new InvalidOperationException("Order does not have finalize data.");
             var resp = await Context.HttpClient.Post<Order>(Context, order.Finalize, payload, true);
             return resp.Resource;
         }
@@ -55,12 +57,14 @@ namespace Certes.Acme
         /// <param name="preferredChain">The preferred Root Certificate</param>
         /// </summary>
         /// <returns>The certificate chain in PEM.</returns>
-        public async Task<CertificateChain> Download(string preferredChain = null)
+        public async Task<CertificateChain> Download(string? preferredChain = null)
         {
             var order = await Resource();
+            if (order?.Certificate == null)
+                throw new InvalidOperationException("Order does not have a certificate.");
             var resp = await Context.HttpClient.Post<string>(Context, order.Certificate, null, false);
 
-            var defaultChain = new CertificateChain(resp.Resource);
+            var defaultChain = new CertificateChain(resp.Resource!);
             if (defaultChain.MatchesPreferredChain(preferredChain) || !resp.Links.Contains("alternate"))
                 return defaultChain;
 

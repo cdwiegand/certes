@@ -14,7 +14,7 @@ namespace Certes.Acme.Resource
         /// The certificate to be revoked, in the base64url-encoded version of the DER format.
         /// </value>
         [JsonProperty("certificate")]
-        public string Certificate { get; set; }
+        public string? Certificate { get; set; }
 
 
         /// <summary>

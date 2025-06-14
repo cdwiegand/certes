@@ -30,7 +30,7 @@ namespace Certes.Acme
         /// </remarks>
         private readonly static IList<ProductInfoHeaderValue> userAgentHeaders = new[]
         {
-            new ProductInfoHeaderValue("Certes", Assembly.GetExecutingAssembly().GetName().Version.ToString()),
+            new ProductInfoHeaderValue("Certes", Assembly.GetExecutingAssembly().GetName().Version!.ToString()),
             new ProductInfoHeaderValue(".NET", Environment.Version.ToString()),
         };
 
@@ -38,9 +38,9 @@ namespace Certes.Acme
         private readonly static Lazy<HttpClient> SharedHttp = new Lazy<HttpClient>(CreateHttpClient);
         private readonly Lazy<HttpClient> http;
 
-        private Uri newNonceUri;
+        private Uri? newNonceUri;
         private readonly Uri directoryUri;
-        private string nonce;
+        private string? nonce;
 
         /// <summary>
         /// Gets the HTTP client.
@@ -65,7 +65,7 @@ namespace Certes.Acme
         /// <param name="directoryUri">The ACME directory URI.</param>
         /// <param name="http">The HTTP.</param>
         /// <exception cref="ArgumentNullException">directoryUri</exception>
-        public AcmeHttpClient(Uri directoryUri, HttpClient http = null)
+        public AcmeHttpClient(Uri directoryUri, HttpClient? http = null)
         {
             this.directoryUri = directoryUri;
             this.http = http == null ? SharedHttp : new Lazy<HttpClient>(() => http);
@@ -97,12 +97,12 @@ namespace Certes.Acme
         /// <param name="uri">The URI.</param>
         /// <param name="payload">The payload.</param>
         /// <returns></returns>
-        public async Task<AcmeHttpResponse<T>> Post<T>(Uri uri, object payload)
+        public async Task<AcmeHttpResponse<T>> Post<T>(Uri uri, object? payload)
         {
             var payloadJson = JsonConvert.SerializeObject(payload, Formatting.None, jsonSettings);
             var content = new StringContent(payloadJson, Encoding.UTF8, MimeJoseJson);
             // boulder will reject the request if sending charset=utf-8
-            content.Headers.ContentType.CharSet = null;
+            content.Headers.ContentType!.CharSet = null;
 
             var msg = new HttpRequestMessage
             {
@@ -177,7 +177,7 @@ namespace Certes.Acme
                     })
                     .ToLookup(l => l.Rel, l => l.Uri);
             }
-            return links;
+            return links!;
         }
 
         private async Task<AcmeHttpResponse<T>> ProcessResponse<T>(HttpResponseMessage response, Uri requestedUri)
@@ -197,12 +197,12 @@ namespace Certes.Acme
             {
                 if (IsJsonMedia(response.Content?.Headers.ContentType?.MediaType))
                 {
-                    var json = await response.Content.ReadAsStringAsync();
+                    var json = await response.Content!.ReadAsStringAsync();
                     resource = JsonConvert.DeserializeObject<T>(json);
                 }
                 else if (typeof(T) == typeof(string))
                 {
-                    object content = await response.Content.ReadAsStringAsync();
+                    object content = await response.Content!.ReadAsStringAsync();
                     resource = (T)content;
                 }
             }
@@ -210,7 +210,7 @@ namespace Certes.Acme
             {
                 if (IsJsonMedia(response.Content?.Headers?.ContentType?.MediaType))
                 {
-                    var json = await response.Content.ReadAsStringAsync();
+                    var json = await response.Content!.ReadAsStringAsync();
                     error = JsonConvert.DeserializeObject<AcmeError>(json);
                 }
                 else
@@ -227,12 +227,12 @@ namespace Certes.Acme
                 }
             }
 
-            return new AcmeHttpResponse<T>(location, resource, links, error, retryafter);
+            return new AcmeHttpResponse<T>(location!, resource!, links, error, retryafter);
         }
 
         private async Task FetchNonce()
         {
-            newNonceUri = newNonceUri ?? (await Get<Directory>(directoryUri)).Resource.NewNonce;
+            newNonceUri = newNonceUri ?? (await Get<Resource.Directory>(directoryUri)).Resource!.NewNonce;
 
             var msg = new HttpRequestMessage
             {
@@ -251,7 +251,7 @@ namespace Certes.Acme
             nonce = values.FirstOrDefault();
         }
 
-        private static bool IsJsonMedia(string mediaType)
+        private static bool IsJsonMedia(string? mediaType)
         {
             if (mediaType != null && mediaType.StartsWith("application/"))
             {

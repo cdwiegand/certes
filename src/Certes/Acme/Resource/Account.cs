@@ -28,7 +28,7 @@ namespace Certes.Acme.Resource
         /// The contact.
         /// </value>
         [JsonProperty("contact")]
-        public IList<string> Contact { get; set; }
+        public IList<string>? Contact { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the terms of service is agreed.
@@ -47,7 +47,7 @@ namespace Certes.Acme.Resource
         ///  
         /// </value>
         [JsonProperty("externalAccountBinding")]
-        public object ExternalAccountBinding { get; set; }
+        public object? ExternalAccountBinding { get; set; }
 
         /// <summary>
         /// Gets or sets the orders.
@@ -56,7 +56,7 @@ namespace Certes.Acme.Resource
         /// The orders.
         /// </value>
         [JsonProperty("orders")]
-        public Uri Orders { get; set; }
+        public Uri? Orders { get; set; }
 
         /// <summary>
         /// Represents the payload to retrieve existing account by key.

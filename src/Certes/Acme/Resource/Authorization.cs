@@ -16,7 +16,7 @@ namespace Certes.Acme.Resource
         /// The identifier.
         /// </value>
         [JsonProperty("identifier")]
-        public Identifier Identifier { get; set; }
+        public Identifier? Identifier { get; set; }
 
         /// <summary>
         /// Gets or sets the status.
@@ -43,7 +43,7 @@ namespace Certes.Acme.Resource
         /// The scope.
         /// </value>
         [JsonProperty("scope")]
-        public Uri Scope { get; set; }
+        public Uri? Scope { get; set; }
 
         /// <summary>
         /// Gets or sets the challenges.
@@ -52,7 +52,7 @@ namespace Certes.Acme.Resource
         /// The challenges.
         /// </value>
         [JsonProperty("challenges")]
-        public IList<Challenge> Challenges { get; set; }
+        public IList<Challenge> Challenges { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the flag indicating if this authorization is for wildcard.

@@ -23,6 +23,6 @@ namespace Certes.Acme.Resource
         /// The value.
         /// </value>
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

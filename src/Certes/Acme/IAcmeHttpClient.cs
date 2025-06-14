@@ -25,7 +25,7 @@ namespace Certes.Acme
         /// <param name="uri">The URI.</param>
         /// <param name="payload">The payload.</param>
         /// <returns>The response from ACME server.</returns>
-        Task<AcmeHttpResponse<T>> Post<T>(Uri uri, object payload);
+        Task<AcmeHttpResponse<T>> Post<T>(Uri uri, object? payload);
 
         /// <summary>
         /// Gets the data from specified URI.
@@ -59,11 +59,11 @@ namespace Certes.Acme
         internal static async Task<AcmeHttpResponse<T>> Post<T>(this IAcmeHttpClient client,
             IAcmeContext context,
             Uri location,
-            object entity,
+            object? entity,
             bool ensureSuccessStatusCode)
         {
 
-            var payload = await context.Sign(entity, location);
+            JwsPayload? payload = await context.Sign(entity, location);
             var response = await client.Post<T>(location, payload);
             var retryCount = context.BadNonceRetryCount;
             while (response.Error?.Status == System.Net.HttpStatusCode.BadRequest &&

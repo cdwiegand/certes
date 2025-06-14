@@ -36,8 +36,11 @@ namespace Certes.Acme
             {
                 var resp = await Context.HttpClient.Get<OrderList>(next);
 
-                orderList.AddRange(
-                    resp.Resource.Orders.Select(o => new OrderContext(Context, o)));
+                if (resp.Resource?.Orders != null)
+                {
+                    orderList.AddRange(
+                        resp.Resource.Orders.Select(o => new OrderContext(Context, o)));
+                }
 
                 next = resp.Links["next"].FirstOrDefault();
             }

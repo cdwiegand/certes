@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
     <Authors>Certes Contributors</Authors>
     <Company />
     <Product>Certes ACME Client</Product>

@@ -18,7 +18,7 @@ namespace Certes
         /// </value>
         public string CountryName
         {
-            get => data.TryGetValue("C", out var value) ? value : null;
+            get => data.TryGetValue("C", out var value) ? value : "";
             set => data["C"] = value;
         }
 
@@ -30,7 +30,7 @@ namespace Certes
         /// </value>
         public string State
         {
-            get => data.TryGetValue("ST", out var value) ? value : null;
+            get => data.TryGetValue("ST", out var value) ? value : "";
             set => data["ST"] = value;
         }
 
@@ -42,7 +42,7 @@ namespace Certes
         /// </value>
         public string Locality
         {
-            get => data.TryGetValue("L", out var value) ? value : null;
+            get => data.TryGetValue("L", out var value) ? value : "";
             set => data["L"] = value;
         }
 
@@ -54,7 +54,7 @@ namespace Certes
         /// </value>
         public string Organization
         {
-            get => data.TryGetValue("O", out var value) ? value : null;
+            get => data.TryGetValue("O", out var value) ? value : "";
             set => data["O"] = value;
         }
 
@@ -66,7 +66,7 @@ namespace Certes
         /// </value>
         public string OrganizationUnit
         {
-            get => data.TryGetValue("OU", out var value) ? value : null;
+            get => data.TryGetValue("OU", out var value) ? value : "";
             set => data["OU"] = value;
         }
 
@@ -79,7 +79,7 @@ namespace Certes
         /// </value>
         public string CommonName
         {
-            get => data.TryGetValue("CN", out var value) ? value : null;
+            get => data.TryGetValue("CN", out var value) ? value : "";
             set => data["CN"] = value;
         }
 

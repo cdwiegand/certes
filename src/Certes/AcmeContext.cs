@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using Certes.Jws;
+using Directory = Certes.Acme.Resource.Directory;
 using Identifier = Certes.Acme.Resource.Identifier;
 using IdentifierType = Certes.Acme.Resource.IdentifierType;
 
@@ -17,8 +18,8 @@ namespace Certes
     public class AcmeContext : IAcmeContext
     {
         private const KeyAlgorithm defaultKeyType = KeyAlgorithm.ES256;
-        private Directory directory;
-        private IAccountContext accountContext = null;
+        private Directory? directory;
+        private IAccountContext? accountContext = null;
 
         /// <summary>
         /// Gets the number of retries on a badNonce error.
@@ -26,7 +27,7 @@ namespace Certes
         /// <value>
         /// The number of retries.
         /// </value>
-        public int BadNonceRetryCount { get; }
+        public int BadNonceRetryCount { get; private set; }
 
         /// <summary>
         /// Gets the ACME HTTP client.
@@ -34,7 +35,7 @@ namespace Certes
         /// <value>
         /// The ACME HTTP client.
         /// </value>
-        public IAcmeHttpClient HttpClient { get; }
+        public IAcmeHttpClient HttpClient { get; private set; }
 
         /// <summary>
         /// Gets the directory URI.
@@ -42,7 +43,7 @@ namespace Certes
         /// <value>
         /// The directory URI.
         /// </value>
-        public Uri DirectoryUri { get; }
+        public Uri DirectoryUri { get; private set; }
 
         /// <summary>
         /// Gets the account key.
@@ -62,7 +63,7 @@ namespace Certes
         /// <exception cref="ArgumentNullException">
         /// If <paramref name="directoryUri"/> is <c>null</c>.
         /// </exception>
-        public AcmeContext(Uri directoryUri, IKey accountKey = null, IAcmeHttpClient http = null, int badNonceRetryCount = 1)
+        public AcmeContext(Uri directoryUri, IKey? accountKey = null, IAcmeHttpClient? http = null, int badNonceRetryCount = 1)
         {
             DirectoryUri = directoryUri ?? throw new ArgumentNullException(nameof(directoryUri));
             AccountKey = accountKey ?? KeyFactory.NewKey(defaultKeyType);
@@ -82,7 +83,7 @@ namespace Certes
             }
 
             var resp = await AccountContext.NewAccount(this, new Account.Payload { OnlyReturnExisting = true }, true);
-            return accountContext = new AccountContext(this, resp.Location);
+            return accountContext = new AccountContext(this, resp.Location!);
         }
 
         /// <summary>
@@ -90,11 +91,11 @@ namespace Certes
         /// </summary>
         /// <param name="key">The new account key.</param>
         /// <returns>The account resource.</returns>
-        public async Task<Account> ChangeKey(IKey key)
+        public async Task<Account> ChangeKey(IKey? key)
         {
             var endpoint = await this.GetResourceUri(d => d.KeyChange);
             var location = await Account().Location();
-            
+
             var newKey = key ?? KeyFactory.NewKey(defaultKeyType);
             var keyChange = new
             {
@@ -117,7 +118,7 @@ namespace Certes
         /// <returns>
         /// The account created.
         /// </returns>
-        public async Task<IAccountContext> NewAccount(IList<string> contact, bool termsOfServiceAgreed, string eabKeyId = null, string eabKey = null, string eabKeyAlg = null)
+        public async Task<IAccountContext> NewAccount(IList<string> contact, bool termsOfServiceAgreed, string? eabKeyId = null, string? eabKey = null, string? eabKeyAlg = null)
         {
             var body = new Account
             {
@@ -135,7 +136,7 @@ namespace Certes
         /// <returns>
         /// The ACME directory.
         /// </returns>
-        public async Task<Directory> GetDirectory()
+        public async Task<Acme.Resource.Directory> GetDirectory()
         {
             if (directory == null)
             {
@@ -155,7 +156,7 @@ namespace Certes
         /// <returns>
         /// The awaitable.
         /// </returns>
-        public async Task RevokeCertificate(byte[] certificate, RevocationReason reason, IKey certificatePrivateKey)
+        public async Task RevokeCertificate(byte[] certificate, RevocationReason reason, IKey? certificatePrivateKey)
         {
             var endpoint = await this.GetResourceUri(d => d.RevokeCert);
 
@@ -209,7 +210,7 @@ namespace Certes
         /// <param name="entity">The data to sign.</param>
         /// <param name="uri">The URI for the request.</param>
         /// <returns>The JWS payload.</returns>
-        public async Task<JwsPayload> Sign(object entity, Uri uri)
+        public async Task<JwsPayload> Sign(object? entity, Uri uri)
         {
             var nonce = await HttpClient.ConsumeNonce();
             var location = await Account().Location();
