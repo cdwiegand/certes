@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Certes.Acme.Resource;
+using Certes.Properties;
 
 namespace Certes.Acme
 {
@@ -49,6 +50,10 @@ namespace Certes.Acme
         {
             var payload = new Authorization { Status = AuthorizationStatus.Deactivated };
             var resp = await Context.HttpClient.Post<Authorization>(Context, Location, payload, true);
+            if (resp.Resource == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource,"Deactivate"));
+            }
             return resp.Resource;
         }
     }

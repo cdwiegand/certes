@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Certes.Acme.Resource;
 using Certes.Jws;
+using Certes.Properties;
 
 namespace Certes.Acme
 {
@@ -49,6 +50,8 @@ namespace Certes.Acme
             if (order.Finalize == null)
                 throw new InvalidOperationException("Order does not have finalize data.");
             var resp = await Context.HttpClient.Post<Order>(Context, order.Finalize, payload, true);
+            if (resp.Resource == null)
+                throw new AcmeException(Strings.ErrorFinalizeFailed);
             return resp.Resource;
         }
 
@@ -72,6 +75,8 @@ namespace Certes.Acme
             foreach (var alternate in alternateLinks)
             {
                 resp = await Context.HttpClient.Post<string>(Context, alternate, null, false);
+                if (resp?.Resource == null)
+                    throw new AcmeException(string.Format(Strings.ErrorFetchResource, "Certificate Chain"));
                 var chain = new CertificateChain(resp.Resource);
 
                 if (chain.MatchesPreferredChain(preferredChain))

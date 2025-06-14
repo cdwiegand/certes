@@ -92,7 +92,7 @@ namespace Certes
         /// </summary>
         /// <param name="key">The new account key.</param>
         /// <returns>The account resource.</returns>
-        public async Task<Account> ChangeKey(IKey? key)
+        public async Task<Account?> ChangeKey(IKey? key)
         {
             var endpoint = await this.GetResourceUri(d => d.KeyChange
                 ?? throw new AcmeException(string.Format(Strings.ErrorEndpointNotPresent, "KeyChange")));
@@ -129,6 +129,10 @@ namespace Certes
             };
 
             var resp = await AccountContext.NewAccount(this, body, true, eabKeyId, eabKey, eabKeyAlg);
+            if (resp.Location == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource,"NewAccount"));
+            }
             return accountContext = new AccountContext(this, resp.Location);
         }
 
@@ -144,6 +148,11 @@ namespace Certes
             {
                 var resp = await HttpClient.Get<Directory>(DirectoryUri);
                 directory = resp.Resource;
+            }
+
+            if (directory== null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource, "Directory"));
             }
 
             return directory;
@@ -205,6 +214,10 @@ namespace Certes
             };
 
             var order = await HttpClient.Post<Order>(this, endpoint, body, true);
+            if (order.Location == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource, "NewOrder"));
+            }
             return new OrderContext(this, order.Location);
         }
 

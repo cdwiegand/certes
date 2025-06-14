@@ -9,6 +9,7 @@ namespace Certes.Acme
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>
     internal class EntityContext<T>
+        where T : class
     {
         /// <summary>
         /// Gets the context.
@@ -52,6 +53,10 @@ namespace Certes.Acme
         public virtual async Task<T> Resource()
         {
             var resp = await Context.HttpClient.Post<T>(Context, Location, null, true);
+            if (resp.Resource == default)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource, typeof(T).Name));
+            }
             return resp.Resource;
         }
     }

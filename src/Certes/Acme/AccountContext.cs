@@ -35,6 +35,10 @@ namespace Certes.Acme
         {
             var payload = new Account { Status = AccountStatus.Deactivated };
             var resp = await Context.HttpClient.Post<Account>(Context, Location, payload, true);
+            if (resp.Resource == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorHttpRequest,"Deactivate"));
+            }
             return resp.Resource;
         }
 
@@ -72,6 +76,10 @@ namespace Certes.Acme
             }
 
             var response = await Context.HttpClient.Post<Account>(Context, location, account, true);
+            if (response.Resource == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource,"Update"));
+            }
             return response.Resource;
         }
 

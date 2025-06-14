@@ -30,7 +30,8 @@ namespace Certes.Func
             using (var reader = new StreamReader(req.Body))
             {
                 var json = await reader.ReadToEndAsync();
-                tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)
+                    ?? throw new ArgumentException("Invalid JSON body. Expected a dictionary of tokens.");
             }
 
             var addedRecords = new Dictionary<string, string>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Certes.Acme.Resource;
+using Certes.Properties;
 
 namespace Certes.Acme
 {
@@ -61,6 +62,10 @@ namespace Certes.Acme
         public async Task<Challenge> Validate()
         {
             var resp = await Context.HttpClient.Post<Challenge>(Context, Location, new { }, true);
+            if (resp.Resource == null)
+            {
+                throw new AcmeException(string.Format(Strings.ErrorFetchResource,"Validate"));
+            }
             return resp.Resource;
         }
     }

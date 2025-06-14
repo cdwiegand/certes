@@ -89,7 +89,7 @@ namespace Certes
         /// </summary>
         /// <param name="key">The new account key.</param>
         /// <returns>The account resource.</returns>
-        Task<Account> ChangeKey(IKey? key = null);
+        Task<Account?> ChangeKey(IKey? key);
 
         /// <summary>
         /// Creates a new the order.
