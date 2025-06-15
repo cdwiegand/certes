@@ -7,13 +7,13 @@ using static Certes.Func.Helper;
 
 namespace Certes.Func
 {
-    public class HttpChanllengeFunction
+    public class HttpChallengeFunction
     {
         private readonly ILogger _logger;
 
-        public HttpChanllengeFunction(ILoggerFactory loggerFactory)
+        public HttpChallengeFunction(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<HttpChanllengeFunction>();
+            _logger = loggerFactory.CreateLogger<HttpChallengeFunction>();
         }
 
         [Function(nameof(HandleHttpChallenge))]

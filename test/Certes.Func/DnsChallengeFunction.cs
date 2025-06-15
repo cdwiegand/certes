@@ -12,13 +12,13 @@ using static Certes.Func.Helper;
 
 namespace Certes.Func
 {
-    public class DnsChanllengeFunction
+    public class DnsChallengeFunction
     {
         private readonly ILogger _logger;
 
-        public DnsChanllengeFunction(ILoggerFactory loggerFactory)
+        public DnsChallengeFunction(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<HttpChanllengeFunction>();
+            _logger = loggerFactory.CreateLogger<HttpChallengeFunction>();
         }
 
         [Function(nameof(HandleDnsChallenge))]
@@ -55,11 +55,11 @@ namespace Certes.Func
 
                 foreach (var p in tokens)
                 {
-                    var name = "_acme-challenge." + p.Key.Replace(".dymetis.com", "");
+                    var name = "_acme-challenge." + p.Key.Replace(".wiegandtech.net", "");
                     var value = accountKey.SignatureKey.DnsTxt(p.Value);
                     await client.RecordSets.CreateOrUpdateAsync(
-                        "dymetis",
-                        "dymetis.com",
+                        "certes-ci",
+                        "wiegandtech.net",
                         name,
                         RecordType.TXT,
                         new RecordSetInner(
