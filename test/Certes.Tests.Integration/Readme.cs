@@ -17,7 +17,7 @@ namespace Certes
             var acme = new AcmeContext(acmeDir, accountKey, httpClient);
             var account = await acme.Account();
 
-            var order = await acme.NewOrder(new[] { "www.certes-ci.dymetis.com" });
+            var order = await acme.NewOrder(new[] { "www.certes-ci.wiegandtech.net" });
 
             var authz = (await order.Authorizations()).First();
             var httpChallenge = await authz.Http();
@@ -49,7 +49,7 @@ namespace Certes
                 Locality = "Toronto",
                 Organization = "Certes",
                 OrganizationUnit = "Dev",
-                CommonName = "www.certes-ci.dymetis.com",
+                CommonName = "www.certes-ci.wiegandtech.net",
             }, privateKey, null);
 
             var pfxBuilder = cert.ToPfx(privateKey);

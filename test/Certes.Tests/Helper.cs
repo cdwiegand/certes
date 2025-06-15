@@ -96,7 +96,7 @@ namespace Certes
                 return ValidCertPem;
             }
 
-            var hosts = new[] { $"xunit-es256.certes-ci.dymetis.com" };
+            var hosts = new[] { $"xunit-es256.certes-ci.wiegandtech.net" };
             var dirUri = await GetAcmeUriV2();
             var httpClient = GetAcmeHttpClient(dirUri);
             var ctx = new AcmeContext(dirUri, GetKeyV2(), http: httpClient);

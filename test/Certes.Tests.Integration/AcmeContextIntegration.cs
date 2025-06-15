@@ -24,7 +24,7 @@ namespace Certes
         protected async Task CanGenerateCertificateWithEC(KeyAlgorithm algo)
         {
             var dirUri = await GetAcmeUriV2();
-            var hosts = new[] { $"www-ec-{algo}.certes-ci.dymetis.com".ToLower() };
+            var hosts = new[] { $"{algo}.certes-ci.wiegandtech.net".ToLower() };
             var ctx = new AcmeContext(dirUri, GetKeyV2(algo), http: GetAcmeHttpClient(dirUri));
             var orderCtx = await AuthorizeHttp(ctx, hosts);
 
@@ -40,8 +40,21 @@ namespace Certes
             }, certKey);
             var cert = await orderCtx.Download(null);
 
+            // as time might be off a little, wait 1 second before proceeding to 
+            // increase likelihood we don't think the certificate's not valid for
+            // another second or two..
+            System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
+
             var x509 = new X509Certificate2(cert.Certificate.ToDer());
-            Assert.Contains(hosts[0], x509.Subject);
+            var san = x509.Extensions.FirstOrDefault(p => "Subject Alternative Name".Equals(p.Oid?.FriendlyName ?? ""));
+            string[] sanLines = [];
+            if (san != null)
+            {
+                string? sanStr = san.Format(true);
+                sanLines = sanStr.Split(['\n', '\r'], System.StringSplitOptions.RemoveEmptyEntries | System.StringSplitOptions.TrimEntries);
+            }
+            Assert.True((x509.Subject ?? "").Equals(hosts[0]) || sanLines.Contains($"DNS Name={hosts[0]}"));
+            // pebble test server doesn't pass this assert.. // Assert.Contains(hosts[0], x509.Subject);
 
             // deactivate authz so the subsequence can trigger challenge validation
             await ClearAuthorizations(orderCtx);

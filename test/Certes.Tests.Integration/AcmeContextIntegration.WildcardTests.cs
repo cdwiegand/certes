@@ -21,7 +21,7 @@ namespace Certes
             public async Task CanGenerateWildcard()
             {
                 var dirUri = await GetAcmeUriV2();
-                var hosts = new[] { $"*.wildcard-es256.certes-ci.dymetis.com" };
+                var hosts = new[] { $"*.wildcard-es256.certes-ci.wiegandtech.net" };
                 var ctx = new AcmeContext(dirUri, GetKeyV2(), http: GetAcmeHttpClient(dirUri));
 
                 var orderCtx = await AuthzDns(ctx, hosts);
@@ -38,6 +38,11 @@ namespace Certes
                     CommonName = hosts[0],
                 }, certKey);
                 var pem = await orderCtx.Download(null);
+
+                // as time might be off a little, wait 1 second before proceeding to 
+                // increase likelihood we don't think the certificate's not valid for
+                // another second or two..
+                System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
 
                 var builder = new PfxBuilder(pem.Certificate.ToDer(), certKey);
                 foreach (var issuer in pem.Issuers)

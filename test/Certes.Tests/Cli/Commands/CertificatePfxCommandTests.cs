@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using Certes.Cli.Settings;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -18,12 +19,14 @@ namespace Certes.Cli.Commands
     [Collection(nameof(Helper.GetValidCert))]
     public class CertificatePfxCommandTests
     {
+        readonly Uri orderLoc = new Uri("http://acme.com/o/1");
+        readonly Uri certLoc = new Uri("http://acme.com/c/1");
+        readonly string privateKeyPath = "./my-key.pem";
+
         [Fact]
         public async Task CanProcessCommand()
         {
-            var orderLoc = new Uri("http://acme.com/o/1");
-            var certLoc = new Uri("http://acme.com/c/1");
-            var privateKeyPath = "./my-key.pem";
+            #region Setup Test
             var order = new Order
             {
                 Certificate = certLoc,
@@ -58,12 +61,18 @@ namespace Certes.Cli.Commands
             fileMock.Setup(m => m.ReadAllText(privateKeyPath)).ReturnsAsync(KeyAlgorithm.RS256.GetTestKey());
 
             var envMock = new Mock<IEnvironmentVariables>(MockBehavior.Strict);
-            var (console, stdOutput, errOutput) = MockConsole();
 
             var cmd = new CertificatePfxCommand(
                 settingsMock.Object, (u, k) => ctxMock.Object, fileMock.Object, envMock.Object);
             var command = cmd.Define();
 
+            var (console, stdOutput, errOutput) = MockConsole();
+
+            // wait 1 second, in case cert the server generates isn't valid for a second?
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
+            #endregion
+
+            #region Basic Command
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
             dynamic ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
@@ -72,12 +81,16 @@ namespace Certes.Cli.Commands
             Assert.NotNull(ret.pfx);
 
             orderMock.Verify(m => m.Download(""), Times.Once);
-            errOutput.Clear();
-            stdOutput.Clear();
-
             var outPath = "./cert.pfx";
             fileMock.Setup(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()))
                 .Returns(Task.CompletedTask);
+            #endregion
+
+            // reset!
+            errOutput.Clear();
+            stdOutput.Clear();
+
+            #region Can Export Private Key
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234 --out {outPath}", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
             ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
@@ -87,12 +100,14 @@ namespace Certes.Cli.Commands
                     location = certLoc,
                 }),
                 JsonConvert.SerializeObject(ret));
-
             fileMock.Verify(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()), Times.Once);
-            fileMock.ResetCalls();
+            #endregion
+
+            // reset!
             errOutput.Clear();
             stdOutput.Clear();
 
+            #region Can export private key with external issuers
             // Export PFX with external issuers
             var leafCert = certChain.Certificate.ToPem();
             orderMock.Setup(m => m.Download(null)).ReturnsAsync(new CertificateChain(leafCert));
@@ -103,8 +118,15 @@ namespace Certes.Cli.Commands
             await command.InvokeAsync($"pfx {orderLoc} --private-key {privateKeyPath} abcd1234 --out {outPath} --issuer ./issuers.pem --friendly-name friendly", console.Object);
             Assert.True(errOutput.Length == 0, errOutput.ToString());
             ret = JsonConvert.DeserializeObject(stdOutput.ToString()) ?? throw new InvalidOperationException("No output");
-            Assert.NotEmpty(ret.pfx);
-            fileMock.Verify(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()), Times.Once);
+            // Assert.NotEmpty(ret.pfx); // given an --out, Certes doesn't emit the pfx to stdout!
+            Assert.Equal(
+                JsonConvert.SerializeObject(new
+                {
+                    location = certLoc,
+                }),
+                JsonConvert.SerializeObject(ret));
+            fileMock.Verify(m => m.WriteAllBytes(outPath, It.IsAny<byte[]>()), Times.Exactly(2)); // twice now
+            #endregion
         }
     }
 }

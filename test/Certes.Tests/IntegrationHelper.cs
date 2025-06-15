@@ -91,7 +91,7 @@ namespace Certes
 
         public static async Task DeployDns01(KeyAlgorithm algo, Dictionary<string, string> tokens)
         {
-            using var resp = await http.Value.PutAsync($"http://certes-ci.dymetis.com/dns-01/{algo}", new StringContent(JsonConvert.SerializeObject(tokens), Encoding.UTF8, "application/json"));
+            using var resp = await http.Value.PutAsync($"http://certes-ci.wiegandtech.net/dns-01/{algo}", new StringContent(JsonConvert.SerializeObject(tokens), Encoding.UTF8, "application/json"));
 
             var respJson = await resp.Content.ReadAsStringAsync();
         }

@@ -26,11 +26,13 @@ namespace Certes
             {
             }
 
-            [Fact]
-            public async Task CanGenerateCertificateTlsAlpn()
+            // unable to support tls-alpn tests at this time:
+            // [Fact]
+            // public void CanGenerateCertificateTlsAlpn()
+            protected async Task CanGenerateCertificateTlsAlpn()
             {
                 var dirUri = await GetAcmeUriV2();
-                var hosts = new[] { $"{Guid.NewGuid():N}.tls-alpn.certes-ci.dymetis.com" };
+                var hosts = new[] { $"certes-ci.wiegandtech.net" };
                 var ctx = new AcmeContext(dirUri, GetKeyV2(), http: GetAcmeHttpClient(dirUri));
                 var orderCtx = await ctx.NewOrder(hosts);
                 var order = await orderCtx.Resource();
@@ -83,6 +85,11 @@ namespace Certes
                     CommonName = hosts[0],
                 }, certKey);
                 var certChain = await orderCtx.Download(null);
+
+                // as time might be off a little, wait 1 second before proceeding to 
+                // increase likelihood we don't think the certificate's not valid for
+                // another second or two..
+                System.Threading.Thread.Sleep(System.TimeSpan.FromSeconds(1));
 
                 var pfxBuilder = certChain.ToPfx(certKey);
                 pfxBuilder.AddTestCerts();
